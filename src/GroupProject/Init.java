@@ -65,6 +65,7 @@ public class Init {
             } // Check if the current tile is the home base
             else if (_i == homeBaseLocation) {
                 currentLocation = new Location(true,false,false,false);
+                currentLocation.setPlayerPos(true);
                 System.out.printf("(DEBUG: Home Base: %d)\n",_i);
             } // Check if the current tile has the weapon
             else if (_i == weaponLocation) { // Check if the current tile is the home base
