@@ -12,7 +12,7 @@ calculates enemy attacks, and prints the final battle result.
 */
 
 public class Battle {
-    public static void main(String[] args) {
+    public static void main() {
         Scanner input = new Scanner(System.in);
         Random rand = new Random();
 
