@@ -15,6 +15,8 @@ when the inventory is full.
 public class Inventory {
     private final int MAX_SLOTS = 5;
     private final List<Item> items = new ArrayList<>();
+    /*Bug: While navigating the player had no limit to what they could pick up or carry. Unnecessary_Scrap became useless mechanically.
+      Fix: After imposing a maximum of five inventory slots, the player could no longer pick up every item on the map*/
 
     public boolean isFull() {
         return items.size() >= MAX_SLOTS;
