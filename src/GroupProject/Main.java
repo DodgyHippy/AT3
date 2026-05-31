@@ -16,11 +16,10 @@ public class Main {
         UI.introSequence();
 
         while (gameRunning && player.isAlive()) {
-            Location currentTile = gameMap.get(player.getPosition());
 
             UI.commandOptions(player, gameMap);
 
-            currentTile = gameMap.get(player.getPosition());
+            Location currentTile = gameMap.get(player.getPosition());
 
             int surveyDataCollected = countSurveyedSites(gameMap);
 

@@ -20,15 +20,22 @@ public class Location {
 
     private boolean isPlayerPos = false;
     private boolean isMonsterPos = false;
+    private Item item;
+    private String name;
+    private String description;
 
 
 
     // Constructor
-    public Location(boolean argHomeBase,boolean argSurveySite,boolean argHasWeapon, boolean argHasWreckage) {
+    public Location(boolean argHomeBase, boolean argSurveySite, boolean argHasWeapon, boolean argHasWreckage,
+                    String name, String description, Item item) {
         isHomeBase = argHomeBase;
         isSurveySite = argSurveySite;
         hasWeapon = argHasWeapon;
         hasWreckage = argHasWreckage;
+        this.name = name;
+        this.description = description;
+        this.item = item;
     }
 
     public boolean getHomeBase() {
@@ -38,9 +45,11 @@ public class Location {
     public boolean getSurveySite() {
         return isSurveySite;
     }
+
     public boolean isSiteSurveyed() {
         return isSiteSurveyed;
     }
+
     public void setSiteSurveyed(boolean argSiteSurveyed) {
         this.isSiteSurveyed = argSiteSurveyed;
     }
@@ -48,6 +57,7 @@ public class Location {
     public boolean getHasWeapon() {
         return hasWeapon;
     }
+
     public void setHasWeapon(boolean argHasWeapon) {
         this.hasWeapon = argHasWeapon;
     }
@@ -55,6 +65,7 @@ public class Location {
     public boolean getHasWreck() {
         return hasWreckage;
     }
+
     public void setWreckExplored(boolean argWreckExplored) {
         this.hasWreckage = argWreckExplored;
     }
@@ -62,6 +73,7 @@ public class Location {
     public boolean isPlayerPos() {
         return isPlayerPos;
     }
+
     public void setPlayerPos(boolean argPlayerPos) {
         this.isPlayerPos = argPlayerPos;
     }
@@ -69,7 +81,24 @@ public class Location {
     public boolean isMonsterPos() {
         return isMonsterPos;
     }
+
     public void setMonsterPos(boolean argMonsterPos) {
         this.isMonsterPos = argMonsterPos;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public Item getItem() {
+        return item;
+    }
+
+    public void removeItem() {
+        item = null;
     }
 }

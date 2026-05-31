@@ -52,7 +52,7 @@ public class UI {
             }
             case "mov": {
                 //System.out.println("DEBUG: move command!");
-                UI.movePlayer(playerObject);
+                UI.movePlayer(playerObject, gameMap);
                 break;
             }
             case "inv": {
@@ -65,8 +65,13 @@ public class UI {
                 UI.scanPlayer(playerObject, gameMap);
                 break;
             }
+            case "int": {
+                //System.out.println("DEBUG: interact command!");
+                UI.interactPlayer(playerObject, gameMap);
+                break;
+            }
             case "help": {
-                System.out.print("pos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\n");
+                System.out.print("pos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\nint: Interact with items.\n");
                 //System.out.println("DEBUG: help command!");
                 break;
             }
@@ -77,10 +82,10 @@ public class UI {
 
     public static void posPlayer(Player playerObject) {
         int currentPlayerPos = playerObject.getPosition();
-        System.out.printf("Current positon: %d",currentPlayerPos);
+        System.out.printf("Current positon: %d\n",currentPlayerPos);
     }
 
-    public static void movePlayer(Player playerObject) {
+    public static void movePlayer(Player playerObject, ArrayList<Location> gameMap) {
         Scanner scanner = new Scanner(System.in);
         int currentPlayerPos = playerObject.getPosition();
 
@@ -106,16 +111,62 @@ public class UI {
 
         if (isMatch) {
             playerObject.setPosition(Integer.parseInt(inArg));
+            Location currentLocation = gameMap.get(playerObject.getPosition());
+
+            System.out.println("Moved to grid " + playerObject.getPosition() + ".");
+            System.out.println("Location: " + currentLocation.getName());
+            System.out.println(currentLocation.getDescription());
+
+            if (currentLocation.getItem() != null) {
+                System.out.println("Item detected: " + currentLocation.getItem().getName());
+                System.out.println("Use 'int' to interact with it.");
+            }
+
         } else if (inArg.equals("cnl")) {
             return;
         } else {
             System.out.println("Error! Please enter a valid command.\n");
-            UI.movePlayer(playerObject);
+            UI.movePlayer(playerObject, gameMap);
         }
     }
 
     public static void invPlayer(Player playerObject) {
+        Scanner scanner = new Scanner(System.in);
 
+        playerObject.getInventory().openInventory();
+
+        System.out.print("Type 'use' to use an item or 'cnl' to cancel.\nC:\\>inventory> ");
+        String input = scanner.nextLine().toLowerCase();
+
+        if (input.equals("use")) {
+            System.out.print("Enter item name: ");
+            String itemName = scanner.nextLine();
+            playerObject.useItem(itemName);
+        } else if (!input.equals("cnl")) {
+            System.out.println("Error! Please enter a valid command.");
+        }
+
+    }
+
+    public static void interactPlayer(Player playerObject, ArrayList<Location> gameMap) {
+        Location currentLocation = gameMap.get(playerObject.getPosition());
+
+        if (currentLocation.getItem() != null) {
+            Item item = currentLocation.getItem();
+
+            if (playerObject.getInventory().addItem(item)) {
+                currentLocation.removeItem();
+            }
+
+            return;
+        }
+
+        if (currentLocation.getSurveySite() && !currentLocation.isSiteSurveyed()) {
+            System.out.println("Survey site detected. Use 'scn' to scan this location.");
+            return;
+        }
+
+        System.out.println("There is nothing useful to interact with here.");
     }
 
     public static void scanPlayer(Player playerObject, ArrayList<Location> gameMap) {
