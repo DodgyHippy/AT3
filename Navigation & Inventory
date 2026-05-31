@@ -1,0 +1,329 @@
+/*Author: Sebastion
+
+*/
+
+import java.util.*;
+
+enum ItemType {
+    PRIMARY, SECONDARY
+}
+
+class Item {
+    String name;
+    ItemType type;
+    int points; //Reserved for Primary Objects, which is how the player scores
+    int restoreHealth; //Reserved for Repair Kits
+    int restoreEnergy; //Reserved for Batteries
+
+    Item(String name, ItemType type, int points, int restoreHealth, int restoreEnergy) {
+        this.name = name;
+        this.type = type;
+        this.points = points;
+        this.restoreHealth = restoreHealth;
+        this.restoreEnergy = restoreEnergy;
+    } //Coding the functions of the items as well as for the game itself
+}
+
+class Inventory {
+    private final int MAX_SLOTS = 5;
+    private final List<Item> items = new ArrayList<>();
+    public boolean isFull() {
+        return items.size() >= MAX_SLOTS;
+    } /*A maximum of five inventory slots is allocated for game balance so that players must choose between winning and survival*/
+
+    public boolean addItem(Item item) {
+        if (isFull()) {
+            System.out.println("Your manifest is full, you cannot collect " + item.name + ".");
+            return false;
+        }
+        items.add(item);
+        System.out.println(item.name + " was collected.");
+        return true;
+    } //Prevents players from simply picking an item up if their inventory is full
+
+    public void openInventory() {
+        System.out.println("=== Submariner Storage Vat ===");
+        if (items.isEmpty()) {
+            System.out.println("Your manifest is empty.");
+        } else {
+            for (int i = 0; i < items.size(); i++) {
+                System.out.println((i + 1) + ": " + items.get(i).name);
+            }
+        }
+        System.out.println("===============");
+    } /*Ordinarily, this function will print a manifest of the player's inventory unless
+    it is empty, in which case, the player will be told such. I debated using a system that
+    would only tell the player how many inventory slots was being used to make things more
+    difficult, but I ultimately decided against it.*/
+    
+    //Iteration for the original code
+    //System.out.println("You've used " + player.inventory.getItems().size()) + " spaces in your inventory so far.";
+    
+    public boolean removeItem(String name) {
+        for (Item i : items) {
+            if (i.name.equals(name)) {
+                items.remove(i);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    } /*These lines of code allow players to pick out items from their inventory for removal*/
+}
+
+class Player {
+    int row, col;
+    int health = 100;
+    int energy = 100;
+    int points = 0;
+    Inventory inventory = new Inventory();
+/*This section assigns the player's starting values and also assigns a new inventory*/
+    public Player(int startRow, int startCol) {
+        this.row = startRow;
+        this.col = startCol;
+    }
+
+    public void useItem(String name) {
+        for (Item i : inventory.getItems()) {
+            if (i.name.equals(name) && i.type == ItemType.SECONDARY) {
+                if (name.equals("Repair_Kit")) {
+                    health += i.restoreHealth;
+                    System.out.println("You effected repairs using a Repair Kit. Hull Integrity is now at " + health + "%.");
+                } else if (name.equals("Battery")) {
+                    energy += i.restoreEnergy;
+                    System.out.println("You replenished your Submariner's power. Energy is now " + energy + "%.");
+                } /*The code which is the functionality behind items*/
+                inventory.removeItem(name);
+                return; /*Once players use an item, it is expended and this ensures that
+                they can't use it again.*/
+            }
+        }
+        System.out.println("You're unable to use a " + name + ".");
+    } //Just reminds the player that they can't use an item they've already used
+
+    public void dropItem(String name) {
+        for (Item i : inventory.getItems()) {
+            if (i.name.equals(name)) {
+                if (i.type == ItemType.PRIMARY) {
+                    System.out.println("This is a vital prospect, you must retain it until it can be evaluated.");
+                    return;
+                } /*Because the player's prospects are how they earn points, even Unnecessary Scrap,
+                they can't be expelled unless cashed in.*/
+                inventory.removeItem(name);
+                System.out.println(name + " was ejected. Unfortunately, it cannot be recovered later.");
+                return; //Players can drop Repair Kits or Batteries to make room for prospects
+            } 
+        }
+        System.out.println(name + " is not among your manifest. Prospecting the depths may yield such a thing, however.");
+    } //Above line ensures players can't use items they don't actually own.
+
+    public void loseHealth(int amount) {
+        health -= amount;
+        System.out.println("The Submariner was damaged! " + amount + "% Hull Integrity lost, " + health + "% remaining.");
+        if (health <= 0) {
+            health = 0;
+            inventory.getItems().clear();
+            points = 0;
+            System.out.println("You lost the Submariner!!! Whatever was onboard is lost, and the salvage recovered is now useless!!!");
+        }
+    } /*Perhaps redundant health system, but it's important in adding stakes to the game,
+    as if the player is killed by the monster, they will lose all progress and need to start
+    again.*/
+} 
+
+class World {
+    Item[][] grid = new Item[4][4];
+    Random rand = new Random();
+
+    Map<String, Integer> limits = new HashMap<>();
+/*This establishes the full map boundaries, but it also starts to randomise the location of
+the items so each run is different for the player.*/
+    public World() {
+        limits.put("Object_Of_Interest", 1);
+        limits.put("Relevant_Find", 2);
+        limits.put("Unnecessary_Scrap", 3);
+        limits.put("Battery", 2);
+        limits.put("Repair_Kit", 2);
+    /*This ensures two things. Firstly, there's at least five unoccupied spaces across the
+    map. Secondly, that in order to complete the game, the player must recover at least one
+    Object Of Interest and one Relevant Find for later on.*/
+        List<Item> pool = new ArrayList<>();
+
+        for (Map.Entry<String, Integer> e : limits.entrySet()) {
+            for (int i = 0; i < e.getValue(); i++) {
+                pool.add(createItem(e.getKey()));
+            } 
+        } //Actual item location randomiser
+
+        Collections.shuffle(pool);
+
+        int index = 0;
+        for (int r = 0; r < 4; r++) {
+            for (int c = 0; c < 4; c++) {
+                if (r == 3 && c == 0) {
+                    grid[r][c] = null; /*This is where the homebase is located, making it so
+                    that nothing can spawn there except for the player.*/
+                } else {
+                    grid[r][c] = index < pool.size() ? pool.get(index++) : null;
+                }
+            }
+        }
+    }
+
+    private Item createItem(String name) {
+        switch (name) {
+            case "Object_Of_Interest":
+                return new Item(name, ItemType.PRIMARY, 4, 0, 0);
+            case "Relevant_Find":
+                return new Item(name, ItemType.PRIMARY, 2, 0, 0);
+            case "Unnecessary_Scrap":
+                return new Item(name, ItemType.PRIMARY, 0, 0, 0);
+            case "Repair_Kit":
+                return new Item(name, ItemType.SECONDARY, 0, 15, 0);
+            case "Battery":
+                return new Item(name, ItemType.SECONDARY, 0, 0, 25);
+        } /*There are three attributes to each item for convenience's sake, where
+        prospects have value in the score attribute, Repair Kits have value in the health attribute
+        and Batteries have value in the stamina attribute.*/
+        return null;
+    } /*I attempted an earlier iteration where each item had only the one value, i.e. 
+        case "Object_Of Interest"
+            return new Item(name, ItemType.ESSENTIAL, value =< 4);
+        case "Unnecessary_Scrap"
+            return new Item(name, ItemType.PRIMARY, value => 0); 
+        But I had trouble actually getting it to work, so I instead made a global attribute
+        system.*/
+}
+
+public class Initiate {
+    static Player player = new Player(3, 0);
+    static World world = new World();
+    static Scanner input = new Scanner(System.in);
+    /*Sets the location of the player in Homebase, but also ensures they don't wander off the
+    map.*/
+
+    public static void main(String[] args) {
+        System.out.println("Welcome to Vicarious Quarrying Ltd. As part of your contract to recover our lost stockpile of Palladium, you've been granted access to a fleet of Tungsten Submariners. Use them to recover our stockpile, and any caches of Deep Sea Iridium you happen accross. Ensure you exercise caution, however, as we've been getting reports of highly dangerous local wildlife in the area.");
+        //Starting screen spiel and lore drop that I made without any prior consultation :p
+        while (true) {
+            System.out.println("Awaiting_Next_Command_ (WASD to move, I to get Manifest, M to mine, E to deposit at Homebase):");
+            String cmd = input.nextLine().toUpperCase();
+
+            switch (cmd) {
+                case "W": move(-1, 0); break;
+                case "S": move(1, 0); break;
+                case "A": move(0, -1); break;
+                case "D": move(0, 1); break;
+                case "I": player.inventory.openInventory(); break;
+                case "P": prospect(); break;
+                case "H": deposit(); break;
+            } /*Commands to allow the player to move, open their inventory, extract materials
+            or cash Objects in for points.*/
+        }
+    }
+
+    static void move(int dr, int dc) {
+        int nr = player.row + dr;
+        int nc = player.col + dc;
+
+        if (nr < 0 || nr >= 4 || nc < 0 || nc >= 4) {
+            System.out.println("Do not leave the prospecting area.");
+            return;
+        } //Specifically used to prevent player from noclipping away
+
+        player.row = nr;
+        player.col = nc;
+        System.out.println("Submariner moved to (" + (nr + 1) + "," + (nc + 1) + ").");
+    } //Like in Iron Lung, this is in place so that the player remains orientated
+
+    static void prospect() {
+        Item found = world.grid[player.row][player.col];
+        if (found == null) {
+            System.out.println("There's nothing here but sand and pebbles.");
+            return;
+        } /*I originally was just going to have the map full of things, but I thought that
+        having empty spaces would add functionality to the sonar.*/
+
+        if (player.inventory.addItem(found)) {
+            world.grid[player.row][player.col] = null;
+        }
+    }
+
+    static void deposit() {
+        if (player.row != 3 || player.col != 0) {
+            System.out.println("Return the Submariner to the Homebase to evaluate finds.");
+            return;
+        } //Makes sure the player doesn't waste Primary items
+
+        List<Item> inv = player.inventory.getItems(); //What the player has on hand
+        List<Item> deposited = new ArrayList<>(); //Scoreboaaard~
+
+        for (int i = inv.size() - 1; i >= 0; i--) {
+            if (inv.get(i).type == ItemType.PRIMARY) {
+                deposited.add(inv.get(i));
+                player.points += inv.get(i).points;
+                inv.remove(i);
+            }
+        } /*Does two things. First is counts the players score. They must have at least one
+        Object Of Interest and one Relevant Find, and the score is in place specifically to
+        ensure the player can't just hand in two Relevant Finds and win. Second is emptying
+        the player's inventory once they're actually cashing in.*/
+
+        if (deposited.isEmpty()) {
+            System.out.println("You've found nothing which can be evaluated.");
+            return;
+        } //Feedback to so player doesn't think they're softlocked or anything
+
+        boolean hadScrap = deposited.stream().anyMatch(i -> i.name.equals("Unnecessary_Scrap"));
+        boolean hadPoints = deposited.stream().anyMatch(i -> i.points > 0);
+
+        if (!hadPoints && hadScrap) {
+            System.out.println("Evaluation:...Lanthanum Deposit. Prospect unsatisfactory, return to the search area for other finds.");
+        } else if (hadPoints && hadScrap) {
+            System.out.println("You have deposited Lanthanum among other valuable finds. It is unsatisfactory but there are other prospects which will be sufficient.");
+        } /*If the player deposits only Unnecessary Scrap, the game gets rid of it and they earn no
+        points. If they deposit Unnecessary Scrap among other things, they will be reminded that it
+        is useless.*/
+
+        if (player.points == 4) {
+            long rfCount = deposited.stream().filter(i -> i.name.equals("Relevant_Find")).count();
+            boolean ooi = deposited.stream().anyMatch(i -> i.name.equals("Object_Of_Interest"));
+
+            if (ooi && rfCount == 0) {
+                System.out.println("Evaluation...Alloyed Palladium successfully retrieved. Locate a cache of Deep Sea Iridium in order to fufil your contract.");
+            } else if (!ooi && rfCount == 2) {
+                System.out.println("Evaluation...Deep Sea Iridium, two caches sucessfully recovered. A reminder that it is imperative that our Palladium Stockpile is retrieved to fufil your contract.");
+            }
+        } /*Two points notifications, one if you've only retrieved Object Of Interest and one
+        if you've only retrieved two Relevant Finds.*/
+
+        if (player.points >= 6) {
+            System.out.println("Success! You've retrieved a satisfactory prospect from the ocean floor and recovered our Palladium Stockpile! Vicarious Quarrying Ltd. thanks you for your service and dilligence in this operation and you shall be paid the full balance of your commission within three business days. We hope you consider working with us again.");
+        } else if (player.points >= 6) {
+            System.out.println("=== Vicarious Quarrying Ltd. Official Prospection Report ===");
+            System.out.println("Recovered Alloyed Palladium Stockpile, one. Status: Verified. Submitting to Client for return.");
+            System.out.println("Recovered Deep Sea Iridium, one. Status: Verified. Beginning sale process on Market.");
+        } else if (player.points >= 8) {
+            System.out.println("=== Vicarious Quarrying Ltd. Official Prospection Report ===");
+            System.out.println("Recovered Alloyed Palladium Stockpile, one. Status: Verified. Submitting to Client for return.");
+            System.out.println("Recovered Deep Sea Iridium, two. Status: Verified. Beginning sale process to Tesla Motors, Inc.");
+        } else 
+            System.out.println("===============");
+            System.out.println(" ");
+            System.out.println(" ");
+            //Extra spaces added for dramatic effect
+            System.out.println("__//USER_PRIVILEGES: INSUFFICIENT__");
+            System.out.println("__//SUBMARINER_CONNECTIVITY_NULL__");
+            System.out.println("__//REMOTE_CONTROL_SESSION_TERMINATING__");
+    } /*Victory and ending message. I orignally was going to have a more basic screen that just counted the final
+    amount of points, written as follows:
+} else
+    System.out.println("Current points: " + player.points)
+        
+        However, that didn't feel super satisfying as a conclusion. The code for the success screen remained the same,
+        the only thing that changed was how the points were calculated at the end. I of course did not account for 
+        Unnecessary_Scrap, as that gets discarded anyways and is just there to make player's lives more difficult.*/
+}
