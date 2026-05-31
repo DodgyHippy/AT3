@@ -61,19 +61,15 @@ public class Init {
             // Check if the current tile is a survey site
             if (Arrays.binarySearch(surveySites,_i) >= 0) {
                 currentLocation = new Location(false,true,false,false);
-                System.out.printf("(DEBUG: Survey Site: %d)\n",_i);
             } // Check if the current tile is the home base
             else if (_i == homeBaseLocation) {
                 currentLocation = new Location(true,false,false,false);
-                System.out.printf("(DEBUG: Home Base: %d)\n",_i);
             } // Check if the current tile has the weapon
             else if (_i == weaponLocation) { // Check if the current tile is the home base
                 currentLocation = new Location(false,false,true,false);
-                System.out.printf("(DEBUG: Weapon Location: %d)\n",_i);
             } // Check if the current tile has the wreckage
             else if (_i == wreckageLocation) {
                 currentLocation = new Location(false,false,false,true);
-                System.out.printf("(DEBUG: Wreckage Location: %d)\n",_i);
             } // If none of the above is true, add an empty map location
             else {
                 currentLocation = new Location(false,false,false,false);
