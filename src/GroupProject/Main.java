@@ -8,7 +8,15 @@ public class Main {
 
         gameMap = Init.mapGen();
 
-        Location currentTile = gameMap.get(3); // valid locations = 0 to 15
+        Player player = Init.createPlayer(gameMap);
+        Monster monster = Init.createMonster(gameMap);
+        Location currentTile = gameMap.get(player.getPosition());
+
+        monster.moveRandomly(gameMap);
+        if (monster.getPosition() == player.getPosition()) {
+            System.out.println("The monster has found you!");
+            Battle.startBattle(player, monster);
+        }
 
         //currentTile.getDeposit();
         //System.out.println(currentTile.getHomeBase());

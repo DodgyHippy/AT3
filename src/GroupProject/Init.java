@@ -65,7 +65,6 @@ public class Init {
             } // Check if the current tile is the home base
             else if (_i == homeBaseLocation) {
                 currentLocation = new Location(true,false,false,false);
-                currentLocation.setPlayerPos(true);
                 System.out.printf("(DEBUG: Home Base: %d)\n",_i);
             } // Check if the current tile has the weapon
             else if (_i == weaponLocation) { // Check if the current tile is the home base
@@ -82,5 +81,41 @@ public class Init {
             gameMap.add(currentLocation);
         }
         return gameMap;
+    }
+
+    /*
+    Author: Brandon
+
+    Sets Player starting location, making sure it's on the home base
+     */
+    public static Player createPlayer(ArrayList<Location> gameMap) {
+        int homeBasePosition = 0;
+
+        for (int i = 0; i < gameMap.size(); i++) {
+            if (gameMap.get(i).getHomeBase()) {
+                homeBasePosition = i;
+                break;
+            }
+        }
+
+        gameMap.get(homeBasePosition).setPlayerPos(true);
+        return new Player("Player", homeBasePosition);
+    }
+
+    /*
+    Author: Brandon
+
+    Sets Monster starting location
+     */
+    public static Monster createMonster(ArrayList<Location> gameMap) {
+        Random random = new Random();
+        int monsterPosition = random.nextInt(gameMap.size());
+
+        while (gameMap.get(monsterPosition).getHomeBase()) {
+            monsterPosition = random.nextInt(gameMap.size());
+        }
+
+        gameMap.get(monsterPosition).setMonsterPos(true);
+        return new Monster("Monster", monsterPosition);
     }
 }

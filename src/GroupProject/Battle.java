@@ -7,76 +7,57 @@ import java.util.Scanner;
 Author: Brandon
 
 This class starts and controls the battle loop.
-It creates the player and enemy health values, lets the player attack,
-calculates enemy attacks, and prints the final battle result.
+It uses the player and monster objects, lets the player attack,
+calculates monster attacks, and updates the real health values.
+
 */
 
 public class Battle {
-    public static void main() {
+    public static void startBattle(Player player, Monster monster) {
         Scanner input = new Scanner(System.in);
         Random rand = new Random();
 
-        // declare participant health values
-
-        int playerHealth = 100;
-        int enemyHealth = 80;
-
         System.out.println("A mass of tentacles lashes from the depths!");
 
-        // if both participants are above 0 health, initiate a round of battle
-
-        while (playerHealth > 0 && enemyHealth > 0) {
-            System.out.println("\nPlayer health: " + playerHealth);
-            System.out.println("Enemy health: " + enemyHealth);
+        while (player.isAlive() && monster.isAlive()) {
+            System.out.println("\nPlayer health: " + player.getHealth());
+            System.out.println("Monster health: " + monster.getHealth());
 
             System.out.print("Press Enter to attack! ");
             input.nextLine();
 
-            // enemy health reduced by the player damage
-
-            int playerDamage = calculatePlayerDamage(rand);
-            enemyHealth -= playerDamage;
+            int playerDamage = calculatePlayerDamage(player, rand);
+            monster.takeDamage(playerDamage);
 
             System.out.println("You dealt " + playerDamage + " damage.");
 
-            // enemy doesn't attack if player reduces their health to 0
-
-            if (enemyHealth <= 0) {
+            if (!monster.isAlive()) {
                 break;
             }
 
-            // player health reduced by the enemy damage
+            int monsterDamage = calculateMonsterDamage(monster, rand);
+            player.takeDamage(monsterDamage);
 
-            int enemyDamage = calculateEnemyDamage(rand);
-            playerHealth -= enemyDamage;
-
-            System.out.println("The enemy dealt " + enemyDamage + " damage.");
+            System.out.println("The monster dealt " + monsterDamage + " damage.");
         }
 
-            // win/lose condition
-
-        if (playerHealth > 0) {
+        if (player.isAlive()) {
             System.out.println("\nThe horror has been stunned! Run now!");
         } else {
             System.out.println("\nYour journey ends here...");
         }
+        monster.resetHealth();
     }
 
-    public static int calculatePlayerDamage(Random rand) {
-
-        // Rolls damage ranging from 10-20 for the player
-
-        int baseDamage = 10;
-        int bonusDamage = rand.nextInt(11);
+    public static int calculatePlayerDamage(Player player, Random rand) {
+        int baseDamage = player.getDamage();
+        int bonusDamage = rand.nextInt(6);
         return baseDamage + bonusDamage;
     }
 
-    public static int calculateEnemyDamage(Random rand) {
-
-        // Rolls damage ranging from 8-15 for the enemy
-
-        int baseDamage = 8;
-        int bonusDamage = rand.nextInt(8);
+    public static int calculateMonsterDamage(Monster monster, Random rand) {
+        int baseDamage = monster.getDamage();
+        int bonusDamage = rand.nextInt(6);
         return baseDamage + bonusDamage;
     }
 }
