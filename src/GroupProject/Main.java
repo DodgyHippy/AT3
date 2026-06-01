@@ -19,7 +19,7 @@ public class Main {
 
             UI.commandOptions(player, gameMap);
 
-            Location currentTile = gameMap.get(player.getPosition());
+            Location currentTile = player.getPosition();
 
             int surveyDataCollected = countSurveyedSites(gameMap);
 
@@ -31,7 +31,7 @@ public class Main {
             if (gameRunning && player.isAlive()) {
                 monster.moveRandomly(gameMap);
 
-                if (monster.getPosition() == player.getPosition()) {
+                if (monster.getPosition().getLocationInt() == player.getPosition().getLocationInt()) {
                     System.out.println("The monster has found you!");
                     Battle.startBattle(player, monster);
                 }

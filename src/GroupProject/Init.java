@@ -60,25 +60,19 @@ public class Init {
 
             // Check if the current tile is a survey site
             if (Arrays.binarySearch(surveySites,_i) >= 0) {
-                currentLocation = new Location(false,true,false,false,
-                        "Survey Site", "Mineral traces appear in the sonar data. Use the scan command here.", null);
+                currentLocation = new Location(false,true,false,false,"Survey Site", "Mineral traces appear in the sonar data. Use the scan command here.", null,_i);
             } // Check if the current tile is the home base
             else if (_i == homeBaseLocation) {
-                currentLocation = new Location(true,false,false,false,
-                        "Home Base", "The deep sea survey base. Return here after scanning both survey sites.", null);
+                currentLocation = new Location(true,false,false,false,"Home Base", "The deep sea survey base. Return here after scanning both survey sites.", null,_i);
             } // Check if the current tile has the weapon
             else if (_i == weaponLocation) {
-                currentLocation = new Location(false,false,true,false,
-                        "Weapon Cache", "A sealed emergency weapon container rests on the sea floor.", null);
+                currentLocation = new Location(false,false,true,false,"Weapon Cache", "A sealed emergency weapon container rests on the sea floor.", null,_i);
             } // Check if the current tile has the wreckage
             else if (_i == wreckageLocation) {
-                currentLocation = new Location(false,false,false,true,
-                        "Wreckage", "A broken wreckage lies scattered across the grid.",
-                        new Item("Repair Kit", ItemType.SECONDARY,25));
+                currentLocation = new Location(false,false,false,true,"Wreckage", "A broken wreckage lies scattered across the grid.",new Item("Repair Kit", ItemType.SECONDARY,25),_i);
             } // If none of the above is true, add an empty map location
             else {
-                currentLocation = new Location(false,false,false,false,
-                        "Open Sea Floor", "A quiet section of ocean floor.", null);
+                currentLocation = new Location(false,false,false,false,"Open Sea Floor", "A quiet section of ocean floor.", null,_i);
             }
             gameMap.add(currentLocation);
         }
@@ -100,8 +94,8 @@ public class Init {
             }
         }
 
-        gameMap.get(homeBasePosition).setPlayerPos(true);
-        return new Player("Player", homeBasePosition);
+        //gameMap.get(homeBasePosition).setPlayerPos(true);
+        return new Player("Player", gameMap.get(homeBasePosition));
     }
 
     /*
@@ -118,6 +112,6 @@ public class Init {
         }
 
         gameMap.get(monsterPosition).setMonsterPos(true);
-        return new Monster("Monster", monsterPosition);
+        return new Monster("Monster", gameMap.get(monsterPosition));
     }
 }

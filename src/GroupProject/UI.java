@@ -45,6 +45,11 @@ public class UI {
         String inArg = scanner.nextLine();
         inArg = inArg.toLowerCase();
         switch (inArg) {
+            case "map": {
+                //System.out.println("DEBUG: map command!");
+                System.out.println("--|0|1|2|3|--\n--|4|5|6|7|--\n-|8|9|10|11|-\n|12|13|14|15|");
+                break;
+            }
             case "pos": {
                 //System.out.println("DEBUG: pos command!");
                 UI.posPlayer(playerObject);
@@ -71,7 +76,7 @@ public class UI {
                 break;
             }
             case "help": {
-                System.out.print("pos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\nint: Interact with items.\n");
+                System.out.print("map: Display survey grid keypad map.\npos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\nint: Interact with items.\n");
                 //System.out.println("DEBUG: help command!");
                 break;
             }
@@ -81,13 +86,14 @@ public class UI {
     }
 
     public static void posPlayer(Player playerObject) {
-        int currentPlayerPos = playerObject.getPosition();
+        int currentPlayerPos = playerObject.getPosition().getLocationInt();
         System.out.printf("Current positon: %d\n",currentPlayerPos);
     }
 
     public static void movePlayer(Player playerObject, ArrayList<Location> gameMap) {
         Scanner scanner = new Scanner(System.in);
-        int currentPlayerPos = playerObject.getPosition();
+        Location currentPlayerLocation = playerObject.getPosition();
+        int currentPlayerPos = playerObject.getPosition().getLocationInt();
 
         int [] currentAllowedMovement = ADJACENCY_TABLE[currentPlayerPos];
 
@@ -110,15 +116,15 @@ public class UI {
         }
 
         if (isMatch) {
-            playerObject.setPosition(Integer.parseInt(inArg));
-            Location currentLocation = gameMap.get(playerObject.getPosition());
+            currentPlayerLocation = gameMap.get(Integer.parseInt(inArg));
+            playerObject.setPosition(currentPlayerLocation);
 
-            System.out.println("Moved to grid " + playerObject.getPosition() + ".");
-            System.out.println("Location: " + currentLocation.getName());
-            System.out.println(currentLocation.getDescription());
+            System.out.println("Moved to grid " + playerObject.getPosition().getLocationInt() + ".");
+            System.out.println("Location: " + currentPlayerLocation.getName());
+            System.out.println(currentPlayerLocation.getDescription());
 
-            if (currentLocation.getItem() != null) {
-                System.out.println("Item detected: " + currentLocation.getItem().getName());
+            if (currentPlayerLocation.getItem() != null) {
+                System.out.println("Item detected: " + currentPlayerLocation.getItem().getName());
                 System.out.println("Use 'int' to interact with it.");
             }
 
@@ -149,7 +155,7 @@ public class UI {
     }
 
     public static void interactPlayer(Player playerObject, ArrayList<Location> gameMap) {
-        Location currentLocation = gameMap.get(playerObject.getPosition());
+        Location currentLocation = playerObject.getPosition();
 
         if (currentLocation.getItem() != null) {
             Item item = currentLocation.getItem();
@@ -170,7 +176,7 @@ public class UI {
     }
 
     public static void scanPlayer(Player playerObject, ArrayList<Location> gameMap) {
-        int currentPlayerPos = playerObject.getPosition();
+        int currentPlayerPos = playerObject.getPosition().getLocationInt();
         boolean isSurveySite = gameMap.get(currentPlayerPos).getSurveySite();
 
         if (isSurveySite) {

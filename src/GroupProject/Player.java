@@ -15,10 +15,10 @@ public class Player {
     private int health;
     private int maxHealth;
     private int damage;
-    private int position;
+    private Location position;
     private Inventory inventory;
 
-    public Player(String name, int position) {
+    public Player(String name, Location position) {
         this.name = name;
         this.maxHealth = 100;
         this.health = maxHealth;
@@ -43,11 +43,11 @@ public class Player {
         return damage;
     }
 
-    public int getPosition() {
+    public Location getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Location position) {
         this.position = position;
     }
 

@@ -11,6 +11,7 @@ import java.util.Random;
 public class Location {
     Random randNum = new Random();
 
+    private int locationPos;
     private boolean isHomeBase;
     private boolean isSurveySite;
     private boolean hasWeapon;
@@ -27,15 +28,19 @@ public class Location {
 
 
     // Constructor
-    public Location(boolean argHomeBase, boolean argSurveySite, boolean argHasWeapon, boolean argHasWreckage,
-                    String name, String description, Item item) {
+    public Location(boolean argHomeBase, boolean argSurveySite, boolean argHasWeapon, boolean argHasWreckage, String name, String description, Item item, int argLocationPos) {
         isHomeBase = argHomeBase;
         isSurveySite = argSurveySite;
         hasWeapon = argHasWeapon;
         hasWreckage = argHasWreckage;
+        locationPos = argLocationPos;
         this.name = name;
         this.description = description;
         this.item = item;
+    }
+
+    public int getLocationInt() {
+        return locationPos;
     }
 
     public boolean getHomeBase() {

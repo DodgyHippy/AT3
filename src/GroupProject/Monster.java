@@ -17,9 +17,9 @@ public class Monster {
     private String name;
     private int health;
     private int damage;
-    private int position;
+    private Location position;
 
-    public Monster(String name, int position) {
+    public Monster(String name, Location position) {
         this.name = name;
         this.health = 80;
         this.damage = 10;
@@ -38,11 +38,11 @@ public class Monster {
         return damage;
     }
 
-    public int getPosition() {
+    public Location getPosition() {
         return position;
     }
 
-    public void setPosition(int position) {
+    public void setPosition(Location position) {
         this.position = position;
     }
 
@@ -66,22 +66,22 @@ public class Monster {
         Random random = new Random();
         int[] possibleMoves = {-4, 4, -1, 1};
 
-        int newPosition = position;
+        int newPosition = position.getLocationInt();
         boolean validMove = false;
 
         while (!validMove) {
             int movement = possibleMoves[random.nextInt(possibleMoves.length)];
-            newPosition = position + movement;
+            newPosition = position.getLocationInt() + movement;
 
             if (newPosition < 0 || newPosition >= gameMap.size()) {
                 continue;
             }
 
-            if (movement == -1 && position % 4 == 0) {
+            if (movement == -1 && position.getLocationInt() % 4 == 0) {
                 continue;
             }
 
-            if (movement == 1 && position % 4 == 3) {
+            if (movement == 1 && position.getLocationInt() % 4 == 3) {
                 continue;
             }
 
@@ -92,8 +92,8 @@ public class Monster {
             validMove = true;
         }
 
-        gameMap.get(position).setMonsterPos(false);
-        position = newPosition;
-        gameMap.get(position).setMonsterPos(true);
+        position.setMonsterPos(false);
+        position = gameMap.get(newPosition);
+        position.setMonsterPos(true);
     }
 }
