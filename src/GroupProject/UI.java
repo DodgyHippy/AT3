@@ -37,9 +37,9 @@ public class UI {
      * Prints the opening story and mission objective.
      */
     public static void introSequence() {
-        System.out.println("\n...boot complete!\nEPMSS-12 Unmanned Submersible\nThelos Dynamics (c) 2057 - 2084\n");
+        System.out.println("\n...boot complete!\nEPMSS-12 Remote Submariner\nThelos Dynamics (c) 2057 - 2084\n");
         System.out.println("\n------ VALUED EMPLOYEE ------");
-        System.out.println("We wish you a warm welcome to the MINERACOR family and congratualte your selection for\nthe exiciting new career oppourtunites at -DEEP SEA SUVERY BASE 82-B2-811 ALPHA- !\n");
+        System.out.println("We wish you a warm welcome from Vicarious Quarrying Ltd. and congratualte your selection for\nthe exiciting new career oppourtunites at -DEEP SEA SUVERY BASE 82-B2-811 ALPHA- !\n");
         System.out.println("TASKING: SURVEY GRID 4-5B1 FOR SEA FLOOR MINERAL DEPOSITS. PROJECTED # OF SITES IN SURVEY GRID: 2\n");
     }
     /**
