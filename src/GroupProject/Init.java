@@ -48,10 +48,15 @@ public class Init {
         // Set a random location for the weapon
         int weaponLocation = nonBaseLocations.get(random.nextInt(nonBaseLocations.size()));
         nonBaseLocations.remove((Integer) weaponLocation);
-        // Set a random location for the wreckage
+        // Set random locations for four wreckage sites
         int wreckageLocation = nonBaseLocations.get(random.nextInt(nonBaseLocations.size()));
-        //System.out.println(wreckageLocation);
         nonBaseLocations.remove((Integer) wreckageLocation);
+        int wreckageLocationTwo = nonBaseLocations.get(random.nextInt(nonBaseLocations.size()));
+        nonBaseLocations.remove((Integer) wreckageLocationTwo);
+        int wreckageLocationThree = nonBaseLocations.get(random.nextInt(nonBaseLocations.size()));
+        nonBaseLocations.remove((Integer) wreckageLocationThree);
+        int wreckageLocationFour = nonBaseLocations.get(random.nextInt(nonBaseLocations.size()));
+        nonBaseLocations.remove((Integer) wreckageLocationFour);
 
         // -------------------------------------- Assigning locations to map array list -------------------------------------- //
 
@@ -59,17 +64,25 @@ public class Init {
             Location currentLocation;
 
             // Check if the current tile is a survey site
-            if (Arrays.binarySearch(surveySites,_i) >= 0) {
-                currentLocation = new Location(false,true,false,false,"Survey Site", "Mineral traces appear in the sonar data. Use the scan command here.", null,_i);
+            if (_i == surveySites[0]) {
+                currentLocation = new Location(false, true, false, false, "Survey Site", "Mineral traces appear in the sonar data. Use the scan command here.", new Item("Palladium Survey Core", ItemType.PRIMARY, 0), _i);
+            } else if (_i == surveySites[1]) {
+                currentLocation = new Location(false, true, false, false, "Survey Site", "Mineral traces appear in the sonar data. Use the scan command here.", new Item("Iridium Survey Core", ItemType.PRIMARY, 0),_i);
             } // Check if the current tile is the home base
             else if (_i == homeBaseLocation) {
                 currentLocation = new Location(true,false,false,false,"Home Base", "The deep sea survey base. Return here after scanning both survey sites.", null,_i);
             } // Check if the current tile has the weapon
             else if (_i == weaponLocation) {
-                currentLocation = new Location(false,false,true,false,"Weapon Cache", "A sealed emergency weapon container rests on the sea floor.", null,_i);
-            } // Check if the current tile has the wreckage
+                currentLocation = new Location(false,false,true,false,"Weapon Cache", "A sealed emergency weapon container rests on the sea floor.", new Item("Harpoon Module",ItemType.SECONDARY,0),_i);
+            } // Check if the current tile has a wreckage
             else if (_i == wreckageLocation) {
-                currentLocation = new Location(false,false,false,true,"Wreckage", "A broken wreckage lies scattered across the grid.",new Item("Repair Kit", ItemType.SECONDARY,25),_i);
+                currentLocation = new Location(false, false, false, true, "Wreckage", "A broken wreckage lies scattered across the grid.", new Item("Repair Kit", ItemType.SECONDARY, 25),_i);
+            } else if (_i == wreckageLocationTwo) {
+                currentLocation = new Location(false, false, false, true, "Wreckage", "A crushed section of wreckage is half buried in the silt.", new Item("Repair Kit", ItemType.SECONDARY, 25),_i);
+            } else if (_i == wreckageLocationThree) {
+                currentLocation = new Location(false, false, false, true, "Wreckage", "A hollow wreckage shell rests silently on the ocean floor.", null,_i);
+            } else if (_i == wreckageLocationFour) {
+                currentLocation = new Location(false, false, false, true, "Wreckage", "Twisted metal from an old survey vessel is scattered across the seabed.", null,_i);
             } // If none of the above is true, add an empty map location
             else {
                 currentLocation = new Location(false,false,false,false,"Open Sea Floor", "A quiet section of ocean floor.", null,_i);

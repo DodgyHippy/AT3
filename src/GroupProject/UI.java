@@ -128,7 +128,7 @@ public class UI {
             System.out.println("Location: " + currentPlayerLocation.getName());
             System.out.println(currentPlayerLocation.getDescription());
 
-            if (currentPlayerLocation.getItem() != null) {
+            if (currentPlayerLocation.getItem() != null && !currentPlayerLocation.getSurveySite()) {
                 System.out.println("Item detected: " + currentPlayerLocation.getItem().getName());
                 System.out.println("Use 'int' to interact with it.");
             }
@@ -163,12 +163,7 @@ public class UI {
         Location currentLocation = playerObject.getPosition();
 
         if (currentLocation.getItem() != null) {
-            Item item = currentLocation.getItem();
-
-            if (playerObject.getInventory().addItem(item)) {
-                currentLocation.removeItem();
-            }
-
+            playerObject.collectItem(currentLocation);
             return;
         }
 
@@ -185,8 +180,12 @@ public class UI {
         boolean isSurveySite = gameMap.get(currentPlayerPos).getSurveySite();
 
         if (isSurveySite) {
+            Location currentLocation = gameMap.get(currentPlayerPos);
+
             System.out.println("MINERALS DETECTED! SURVEY DATA LOGGED IN MANIFEST.");
-            gameMap.get(currentPlayerPos).setSiteSurveyed(true);
+            currentLocation.setSiteSurveyed(true);
+            playerObject.collectItem(currentLocation);
+
         } else {
             System.out.println("NO MINERALS DETECTED.");
         }

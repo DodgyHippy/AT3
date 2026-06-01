@@ -22,7 +22,7 @@ public class Player {
         this.name = name;
         this.maxHealth = 100;
         this.health = maxHealth;
-        this.damage = 15;
+        this.damage = 10;
         this.position = position;
         this.inventory = new Inventory();
     }
@@ -40,6 +40,10 @@ public class Player {
     }
 
     public int getDamage() {
+        if (hasItem("Harpoon Module")) {
+            return damage + 10;
+        }
+
         return damage;
     }
 
@@ -65,7 +69,7 @@ public class Player {
 
     public boolean useItem(String itemName) {
         for (Item item : inventory.getItems()) {
-            if (item.getName().equalsIgnoreCase(itemName) && item.getType() == ItemType.SECONDARY) {
+            if (item.getName().equalsIgnoreCase(itemName) && item.getType() == ItemType.SECONDARY && item.getRestoreHealth() > 0) {
                 heal(item.getRestoreHealth());
                 inventory.removeItem(item.getName());
                 System.out.println(item.getName() + " was used.");
@@ -74,6 +78,32 @@ public class Player {
         }
 
         System.out.println("You cannot use that item.");
+        return false;
+    }
+
+    public boolean collectItem(Location location) {
+        if (location.getItem() == null) {
+            System.out.println("There is no item to collect here.");
+            return false;
+        }
+
+        Item item = location.getItem();
+
+        if (inventory.addItem(item)) {
+            location.removeItem();
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean hasItem(String itemName) {
+        for (Item item : inventory.getItems()) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
+                return true;
+            }
+        }
+
         return false;
     }
 
