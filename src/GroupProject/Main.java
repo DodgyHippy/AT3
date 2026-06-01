@@ -23,9 +23,10 @@ public class Main {
 
             int surveyDataCollected = countSurveyedSites(gameMap);
 
-            if (surveyDataCollected == totalSurveyDataNeeded && currentTile.getHomeBase()) {
-                System.out.println("You returned to home base with all survey data. Mission complete!");
+            if (UI.isMissionComplete()) {
                 gameRunning = false;
+            } else if (surveyDataCollected == totalSurveyDataNeeded && currentTile.getHomeBase()) {
+                System.out.println("Automated terminal online. Use 'tlk' to upload the survey data.");
             }
 
             if (gameRunning && player.isAlive()) {

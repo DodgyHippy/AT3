@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 public class UI {
 
+    private static boolean missionComplete = false;
     private static int [][] ADJACENCY_TABLE = {
             {1,4,5},                        // 0
             {0,2,4,5,6},                    // 1
@@ -75,8 +76,12 @@ public class UI {
                 UI.interactPlayer(playerObject, gameMap);
                 break;
             }
+            case "tlk": {
+                UI.talkTerminal(playerObject, gameMap);
+                break;
+            }
             case "help": {
-                System.out.print("map: Display survey grid keypad map.\npos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\nint: Interact with items.\n");
+                System.out.print("map: Display survey grid keypad map.\npos: Current submersible position.\nmov: Move the submersible.\ninv: Display submersible cargo manifest.\nscn: Perform geologic survey survey.\nint: Interact with items.\ntlk: Talk to the automated terminal.\n");
                 //System.out.println("DEBUG: help command!");
                 break;
             }
@@ -185,5 +190,44 @@ public class UI {
         } else {
             System.out.println("NO MINERALS DETECTED.");
         }
+    }
+
+    public static boolean isMissionComplete() {
+        return missionComplete;
+    }
+
+    public static void talkTerminal(Player playerObject, ArrayList<Location> gameMap) {
+        Location currentLocation = playerObject.getPosition();
+        int surveyDataCollected = 0;
+
+        if (!currentLocation.getHomeBase()) {
+            System.out.println("Signal too weak. Return to Home Base to contact the automated terminal.");
+            return;
+        }
+
+        for (Location location : gameMap) {
+            if (location.getSurveySite() && location.isSiteSurveyed()) {
+                surveyDataCollected++;
+            }
+        }
+
+        if (surveyDataCollected < 2) {
+            System.out.println("Automated Terminal: Survey data incomplete. Scan both mineral sites before upload.");
+            return;
+        }
+
+        System.out.println("Success! You've retrieved a satisfactory prospect from the ocean floor and recovered our Palladium Stockpile!");
+        System.out.println("Vicarious Quarrying Ltd. thanks you for your service and diligence in this operation");
+        System.out.println("and you shall be paid the full balance of your commission within three business days.");
+        System.out.println("We hope you consider working with us again.");
+        System.out.println("=== Vicarious Quarrying Ltd. Official Prospection Report ===");
+        System.out.println("Recovered Alloyed Palladium Stockpile, one. Status: Verified. Submitting to Client for return.");
+        System.out.println("Recovered Deep Sea Iridium, one. Status: Verified. Beginning sale process on Market.");
+        System.out.println("===\n");
+        System.out.println("\n__//USER_PRIVILEGES: INSUFFICIENT__");
+        System.out.println("__//SUBMARINER_CONNECTIVITY_NULL__");
+        System.out.println("__//REMOTE_CONTROL_SESSION_TERMINATING__");
+
+        missionComplete = true;
     }
 }
