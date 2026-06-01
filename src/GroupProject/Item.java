@@ -4,7 +4,7 @@ package GroupProject;
 Author: Sebastion
 
 This class stores the data for an inventory item.
-Each item has a name, item type, point value and health restore value.
+Each item has a name, item type and health restore value.
 
 */
 

@@ -10,9 +10,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 public class Init {
-
-
-    // This is the map generation method. Should only be called once in Main
+    /**
+     * Creates the 4x4 game map and randomly places key locations.
+     *
+     * @return ArrayList<Location> containing all generated map locations
+     */
     public static ArrayList<Location> mapGen() {
         Random random = new Random();
         ArrayList<Location> gameMap = new ArrayList<>();
@@ -23,7 +25,6 @@ public class Init {
         int [] VALID_SURVEY_POS = {1,2,4,5,6,7,8,9,10,11,13,14}; // Base positions only valid on map corners
 
         // Vars
-        boolean homeBaseAdded = false;
         ArrayList<Integer> nonBaseLocations = new ArrayList<>();
         for (int _i : VALID_SURVEY_POS) {
             nonBaseLocations.add(_i);
@@ -92,10 +93,11 @@ public class Init {
         return gameMap;
     }
 
-    /*
-    Author: Brandon
-
-    Sets Player starting location, making sure it's on the home base
+    /**
+     * Creates the player at the home base location.
+     *
+     * @param gameMap the list of all map locations
+     * @return Player object starting at home base
      */
     public static Player createPlayer(ArrayList<Location> gameMap) {
         int homeBasePosition = 0;
@@ -111,10 +113,11 @@ public class Init {
         return new Player("Player", gameMap.get(homeBasePosition));
     }
 
-    /*
-    Author: Brandon
-
-    Sets Monster starting location
+    /**
+     * Creates the monster at a random non-home-base location.
+     *
+     * @param gameMap the list of all map locations
+     * @return Monster object starting away from home base
      */
     public static Monster createMonster(ArrayList<Location> gameMap) {
         Random random = new Random();

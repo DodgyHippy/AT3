@@ -8,7 +8,10 @@ package GroupProject;
 
 import java.util.ArrayList;
 import java.util.Scanner;
-
+/**
+ * Handles all console-based user interface commands.
+ * Displays menus, reads player input, and prints game feedback to the terminal.
+ */
 public class UI {
 
     private static boolean missionComplete = false;
@@ -30,14 +33,21 @@ public class UI {
             {9,10,11,13,15},                // 14
             {10,11,14}                      // 15
     };
-
+    /**
+     * Prints the opening story and mission objective.
+     */
     public static void introSequence() {
         System.out.println("\n...boot complete!\nEPMSS-12 Unmanned Submersible\nThelos Dynamics (c) 2057 - 2084\n");
         System.out.println("\n------ VALUED EMPLOYEE ------");
         System.out.println("We wish you a warm welcome to the MINERACOR family and congratualte your selection for\nthe exiciting new career oppourtunites at -DEEP SEA SUVERY BASE 82-B2-811 ALPHA- !\n");
         System.out.println("TASKING: SURVEY GRID 4-5B1 FOR SEA FLOOR MINERAL DEPOSITS. PROJECTED # OF SITES IN SURVEY GRID: 2\n");
     }
-
+    /**
+     * Reads and processes the player's main command.
+     *
+     * @param playerObject the player entering commands
+     * @param gameMap the list of all map locations
+     */
     public static void commandOptions(Player playerObject, ArrayList<Location> gameMap) {
         Scanner scanner = new Scanner(System.in);
 
@@ -89,12 +99,21 @@ public class UI {
                 System.out.print("Error! Please enter a valid command.\n");
         }
     }
-
+    /**
+     * Prints the player's current grid position.
+     *
+     * @param playerObject the player whose position is displayed
+     */
     public static void posPlayer(Player playerObject) {
         int currentPlayerPos = playerObject.getPosition().getLocationInt();
         System.out.printf("Current positon: %d\n",currentPlayerPos);
     }
-
+    /**
+     * Moves the player to a connected grid location.
+     *
+     * @param playerObject the player being moved
+     * @param gameMap the list of all map locations
+     */
     public static void movePlayer(Player playerObject, ArrayList<Location> gameMap) {
         Scanner scanner = new Scanner(System.in);
         Location currentPlayerLocation = playerObject.getPosition();
@@ -140,7 +159,11 @@ public class UI {
             UI.movePlayer(playerObject, gameMap);
         }
     }
-
+    /**
+     * Opens the player's inventory menu.
+     *
+     * @param playerObject the player whose inventory is opened
+     */
     public static void invPlayer(Player playerObject) {
         Scanner scanner = new Scanner(System.in);
 
@@ -158,7 +181,13 @@ public class UI {
         }
 
     }
-
+    /**
+     * Interacts with the player's current location.
+     * Requires the player to be standing on a location that may contain an item.
+     *
+     * @param playerObject the player interacting with the location
+     * @param gameMap the list of all map locations
+     */
     public static void interactPlayer(Player playerObject, ArrayList<Location> gameMap) {
         Location currentLocation = playerObject.getPosition();
 
@@ -174,7 +203,13 @@ public class UI {
 
         System.out.println("There is nothing useful to interact with here.");
     }
-
+    /**
+     * Scans the player's current location for survey data.
+     * Requires the player to be on a survey site to log useful data.
+     *
+     * @param playerObject the player performing the scan
+     * @param gameMap the list of all map locations
+     */
     public static void scanPlayer(Player playerObject, ArrayList<Location> gameMap) {
         int currentPlayerPos = playerObject.getPosition().getLocationInt();
         boolean isSurveySite = gameMap.get(currentPlayerPos).getSurveySite();
@@ -190,11 +225,23 @@ public class UI {
             System.out.println("NO MINERALS DETECTED.");
         }
     }
-
+    /**
+     * Checks whether the mission has been completed through the terminal.
+     * Requires the terminal interaction to set the mission completion value.
+     *
+     * @return boolean showing whether the player has completed the mission
+     */
     public static boolean isMissionComplete() {
         return missionComplete;
     }
-
+    /**
+     * Handles interaction with the automated home base terminal.
+     * Requires the player to be at home base and have scanned both survey sites.
+     * The method checks survey progress, prints the ending message, and marks the mission complete.
+     *
+     * @param playerObject the player talking to the terminal
+     * @param gameMap the list of all map locations
+     */
     public static void talkTerminal(Player playerObject, ArrayList<Location> gameMap) {
         Location currentLocation = playerObject.getPosition();
         int surveyDataCollected = 0;

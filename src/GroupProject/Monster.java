@@ -45,7 +45,12 @@ public class Monster {
     public void setPosition(Location position) {
         this.position = position;
     }
-
+    /**
+     * Reduces the monster's health after taking damage.
+     * The method subtracts health and prevents it from dropping below zero.
+     *
+     * @param damageAmount the amount of health removed
+     */
     public void takeDamage(int damageAmount) {
         health -= damageAmount;
 
@@ -53,7 +58,9 @@ public class Monster {
             health = 0;
         }
     }
-
+    /**
+     * The method resets the monster to its default health value.
+     */
     public void resetHealth() {
         health = 80;
     }
@@ -61,7 +68,13 @@ public class Monster {
     public boolean isAlive() {
         return health > 0;
     }
-
+    /**
+     * Moves the monster to a random valid nearby location.
+     * The method chooses a random direction, checks map boundaries and home base,
+     * then updates the monster's position.
+     *
+     * @param gameMap the list of all map locations
+     */
     public void moveRandomly(ArrayList<Location> gameMap) {
         Random random = new Random();
         int[] possibleMoves = {-4, 4, -1, 1};

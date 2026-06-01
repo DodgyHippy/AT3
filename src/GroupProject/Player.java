@@ -33,10 +33,7 @@ public class Player {
 
     public int getHealth() {
         return health;
-    }
 
-    public int getMaxHealth() {
-        return maxHealth;
     }
 
     public int getDamage() {
@@ -59,6 +56,11 @@ public class Player {
         return inventory;
     }
 
+    /**
+     * Reduces the player's health after taking damage.
+     *
+     * @param damageAmount the amount of health removed
+     */
     public void takeDamage(int damageAmount) {
         health -= damageAmount;
 
@@ -66,7 +68,13 @@ public class Player {
             health = 0;
         }
     }
-
+    /**
+     * Uses a healing item from the player's inventory.
+     * Requires the item to exist, be secondary, and have a health restore value.
+     *
+     * @param itemName the name of the item to use
+     * @return boolean showing whether the item was successfully used
+     */
     public boolean useItem(String itemName) {
         for (Item item : inventory.getItems()) {
             if (item.getName().equalsIgnoreCase(itemName) && item.getType() == ItemType.SECONDARY && item.getRestoreHealth() > 0) {
@@ -80,7 +88,12 @@ public class Player {
         System.out.println("You cannot use that item.");
         return false;
     }
-
+    /**
+     * Collects an item from a location and adds it to inventory.
+     *
+     * @param location the location being looted
+     * @return boolean showing whether the item was collected
+     */
     public boolean collectItem(Location location) {
         if (location.getItem() == null) {
             System.out.println("There is no item to collect here.");
@@ -96,7 +109,12 @@ public class Player {
 
         return false;
     }
-
+    /**
+     * Checks whether the player has a specific item.
+     *
+     * @param itemName the name of the item being searched for
+     * @return boolean showing whether the item is in the inventory
+     */
     public boolean hasItem(String itemName) {
         for (Item item : inventory.getItems()) {
             if (item.getName().equalsIgnoreCase(itemName)) {
@@ -106,7 +124,11 @@ public class Player {
 
         return false;
     }
-
+    /**
+     * The method increases health and prevents it from going above maximum health.
+     *
+     * @param healAmount the amount of health restored
+     */
     public void heal(int healAmount) {
         health += healAmount;
 

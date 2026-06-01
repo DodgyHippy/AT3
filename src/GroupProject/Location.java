@@ -7,9 +7,7 @@ Each Location is a game tile assigned to the game map array.
 
 package GroupProject;
 
-import java.util.Random;
 public class Location {
-    Random randNum = new Random();
 
     private int locationPos;
     private boolean isHomeBase;

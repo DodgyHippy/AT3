@@ -13,6 +13,15 @@ calculates monster attacks, and updates the real health values.
 */
 
 public class Battle {
+    /**
+     * Starts and controls a battle encounter.
+     * Requires a living player and monster.
+     * The method lets the player attack or run, applies monster attacks,
+     * and ends when the player escapes, the monster is stunned, or the player dies.
+     *
+     * @param player the player in combat
+     * @param monster the monster in combat
+     */
     public static void startBattle(Player player, Monster monster) {
         Scanner input = new Scanner(System.in);
         Random rand = new Random();
@@ -65,13 +74,27 @@ public class Battle {
 
         monster.resetHealth();
     }
-
+    /**
+     * Calculates player attack damage.
+     * The method gets base damage from the Player class and adds a random bonus for variety's sake.
+     *
+     * @param player the player attacking
+     * @param rand the random number generator used for bonus damage
+     * @return int representing total player damage
+     */
     public static int calculatePlayerDamage(Player player, Random rand) {
         int baseDamage = player.getDamage();
         int bonusDamage = rand.nextInt(6);
         return baseDamage + bonusDamage;
     }
-
+    /**
+     * Calculates monster attack damage.
+     * The method gets base monster damage and adds a random bonus for variety's sake.
+     *
+     * @param monster the monster attacking
+     * @param rand the random number generator used for bonus damage
+     * @return int representing total monster damage
+     */
     public static int calculateMonsterDamage(Monster monster, Random rand) {
         int baseDamage = monster.getDamage();
         int bonusDamage = rand.nextInt(6);
